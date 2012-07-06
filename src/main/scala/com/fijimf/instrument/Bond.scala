@@ -18,14 +18,24 @@ trait Bond {
 
   def coupons: List[Scheduled[Double]]
 
-  def price(f: DiscountFunction): Double = {
-    100.0 * (coupons.map(c => (c.value / (frequency * 100)) * f(c.date)).sum + (f(maturity)))
+  def price(pxDate: LocalDate, f: DiscountFunction): Double = {
+    100.0 * (coupons.filter(_.date.isAfter(pxDate)).map(c => (c.value / (frequency * 100)) * f(c.date)).sum + (f(maturity)))
+  }
+
+  //Price on issue date, practically not covering short first coupon etc
+  def price(pxDate: LocalDate, yld: Double): Double = {
+    val d = 1.0 / (1.0 + yld / (frequency * 100))
+    val (factor, sum) = coupons.foldLeft((d, 0.0))((tup: Pair[Double, Double], c:Scheduled[Double]) =>{
+      println(tup)
+      (tup._1 * d, tup._2 + (c.value / (frequency * 100)) * tup._1)
+    })
+    100*(sum+factor/d)
   }
 
 }
 
 case class USTreasuryNote(cusip: String, issueDate: LocalDate, firstCouponDate: LocalDate, maturity: LocalDate, coupon: Double, origTerm: Int) extends Bond {
-  val calendar =  CalendarNY
+  val calendar = CalendarNY
   val frequency = 2
 
   val coupons = TreasuryCouponScheduler(firstCouponDate, maturity)(calendar).map(d => Scheduled(d, coupon)).toList

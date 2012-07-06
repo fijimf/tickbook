@@ -21,7 +21,10 @@ object Tester {
     t2y.coupons.foreach(c=>{
       println(c)
       println(c.date.dayOfWeek().getAsText)
+
     })
+
+    println(t2y.price(new LocalDate("2012-05-15"), 3.0))
 
   }
 }
