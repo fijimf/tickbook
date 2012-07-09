@@ -31,7 +31,6 @@ trait Bond {
     })
     100*(sum+factor/d)
   }
-
 }
 
 case class USTreasuryNote(cusip: String, issueDate: LocalDate, firstCouponDate: LocalDate, maturity: LocalDate, coupon: Double, origTerm: Int) extends Bond {
