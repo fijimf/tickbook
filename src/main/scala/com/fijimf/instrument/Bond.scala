@@ -3,6 +3,7 @@ package com.fijimf.instrument
 import org.joda.time.LocalDate
 import com.fijimf.cashflow.DiscountFunction
 import com.fijimf.util.{CalendarNY, Calendar}
+import util.CouponScheduler
 
 
 case class Scheduled[T](date: LocalDate, value: T)
@@ -40,7 +41,8 @@ case class USTreasuryNote(cusip: String, issueDate: LocalDate, firstCouponDate: 
   val coupons = TreasuryCouponScheduler(firstCouponDate, maturity)(calendar).map(d => Scheduled(d, coupon)).toList
 }
 
-object TreasuryCouponScheduler {
+object TreasuryCouponScheduler extends CouponScheduler {
+
   def apply(fcd: LocalDate, mat: LocalDate)(implicit cal: Calendar) = {
     if (cal.isLastBusinessDayOfMonth(fcd) && cal.isLastBusinessDayOfMonth(mat)) {
       Stream.iterate(fcd)(d => cal.toEom(d.plusMonths(6))).takeWhile(d => !d.isAfter(mat))
