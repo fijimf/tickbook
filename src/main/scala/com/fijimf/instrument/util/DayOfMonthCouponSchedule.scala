@@ -4,7 +4,7 @@ import org.joda.time.LocalDate
 import com.fijimf.util.Calendar
 import scala.math._
 
-class DayOfMonthCouponSchedule(val firstCouponDate: LocalDate, val maturityDate: LocalDate, val dayOfMonth:Option[Int], val frequency: Int, implicit val cal: Calendar) extends CouponScheduler {
+class DayOfMonthCouponSchedule(val firstCouponDate: LocalDate, val maturityDate: LocalDate, val dayOfMonth:Option[Int], val frequency: Int, implicit val cal: Calendar) extends RegularCouponScheduler {
   require(List(1, 2, 3, 4, 6, 12).contains(frequency), "Bad frequency passed to DOM coupon scheduler")
 
   val inc = 12 / frequency
