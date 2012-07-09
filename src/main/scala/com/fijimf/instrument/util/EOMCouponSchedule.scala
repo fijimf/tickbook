@@ -9,5 +9,5 @@ class EOMCouponSchedule(val firstCouponDate: LocalDate, val maturityDate: LocalD
   require(List(1, 2, 3, 4, 6, 12).contains(frequency), "Bad frequency passed to EOM coupon scheduler")
   val inc = 12 / frequency
 
-  def gen = d => cal.toEom(d.plusMonths(inc))
+  def gen = d => cal.toLastBusinesDayOfMonth(d.plusMonths(inc))
 }
